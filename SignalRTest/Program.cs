@@ -9,7 +9,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
+
+
 var app = builder.Build();
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true) // allow any origin
+    //.WithOrigins("https://localhost:44351")); // Allow only this origin can also have multiple origins separated with comma
+    .AllowCredentials()); // all
+// cors allow all
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
