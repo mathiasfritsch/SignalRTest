@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>SignalR Test</h1>
+    <button id="sendButton">Send</button>
+    <ul id="messagesList"></ul>
+    <input type="text" id="messageInput" />
+    <button id="connectButton">Connect</button>
+    <button id="disconnectButton">Disconnect</button>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@3.1.0/dist/browser/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/messageHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("SendMessage", ( message) => {
+            const li = document.createElement("li");
+            li.textContent = `$message ${message}`;
+            document.getElementById("messagesList").appendChild(li);
+        });
+
+        document.getElementById("sendButton").addEventListener("click", event => {
+            const user = "user";
+            const message = document.getElementById("messageInput").value;
+            connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
+        });
+
+        document.getElementById("connectButton").addEventListener("click", event => {
+            connection.start().catch(err => console.error(err.toString()));
+        });
+
+        </script>
+</body>
+</html>
